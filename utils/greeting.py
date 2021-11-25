@@ -1,3 +1,5 @@
+import random
+
 def welcome_message(name):
     greetings = [
         f"Welcome {name}👋",

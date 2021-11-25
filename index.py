@@ -1,5 +1,4 @@
 import discord
-import random
 
 from utils.greeting import welcome_message
 from config import *
