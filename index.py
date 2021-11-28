@@ -8,7 +8,7 @@ from utils.invites import (
     add_channel_invite,
     remove_invite
 )
-from utils.helper import helper_command
+
 from utils.embeds.reminder import start_reminder_embed
 from utils.reminder.thread import reminder_thread
 from utils.embeds.reminder_error import reminder_error
@@ -101,5 +101,6 @@ class DenoBot(discord.Client):
     #     await member.send("oops")
     #     print(f"{member.display_name} left")
 
-bot = DenoBot()
-bot.run(BOT_TOKEN)
+if __name__ == "__main__":
+    bot = DenoBot()
+    bot.run(BOT_TOKEN)
