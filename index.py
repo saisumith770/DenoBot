@@ -1,7 +1,8 @@
+from os import environ
+from dotenv import load_dotenv
 import discord
 
 from utils.embeds.greeting import welcome_message
-from config import *
 from utils.invites import (
     get_invites, 
     get_invite_info,
@@ -15,6 +16,8 @@ from utils.embeds.reminder_error import reminder_error
 from utils.embeds.invalid_command import invalid_command_embed
 from utils.embeds.helper import create_helper_embed
 
+load_dotenv()
+
 class DenoBot(discord.Client):
     def __init__(self):
         intents = discord.Intents.default()
@@ -23,14 +26,14 @@ class DenoBot(discord.Client):
 
         super().__init__(intents=intents)
         self.__version__ = discord.__version__
-        self.name = BOT_NAME
+        self.name = environ.get("BOT_NAME")
         self.reminder_setters = []
         self.reminder_queue = []
 
         print("bot is up and running")
 
     async def on_member_join(self,member):
-        channel = self.get_channel(WELCOME_CHANNEL)
+        channel = self.get_channel(environ.get("WELCOME_CHANNEL"))
         await channel.send(embed=welcome_message(member))
 
     async def on_message(self,message):
@@ -103,4 +106,4 @@ class DenoBot(discord.Client):
 
 if __name__ == "__main__":
     bot = DenoBot()
-    bot.run(BOT_TOKEN)
+    bot.run(environ.get("BOT_TOKEN"))

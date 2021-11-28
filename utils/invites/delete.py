@@ -1,8 +1,8 @@
-from config import *
+from os import environ
 
 async def remove_invite(server,channel,invite_code = "-a"):
     for guild in server.guilds:
-        if guild.name == SERVER:
+        if guild.name == environ.get("SERVER"):
             invites = await guild.invites()
             if(invite_code == "-a"):
                 for invite in invites:

@@ -1,4 +1,4 @@
-from config import *
+from os import environ
 import discord
 
 async def add_channel_invite(
@@ -10,7 +10,7 @@ async def add_channel_invite(
     temporary=True
 ):
     for guild in server.guilds:
-        if guild.name == SERVER:
+        if guild.name == environ.get("SERVER"):
             if(invite_channel == "#select-random-channel"):
                 for _channel in guild.channels:
                     if(isinstance(_channel,discord.TextChannel)):
