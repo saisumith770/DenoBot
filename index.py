@@ -1,6 +1,6 @@
 import discord
 
-from utils.greeting import welcome_message
+from utils.embeds.greeting import welcome_message
 from config import *
 from utils.invites import (
     get_invites, 
@@ -11,6 +11,8 @@ from utils.invites import (
 from utils.helper import helper_command
 from utils.embeds.reminder import start_reminder_embed
 from utils.reminder.thread import reminder_thread
+from utils.embeds.reminder_error import reminder_error
+from utils.embeds.invalid_command import invalid_command_embed
 
 class DenoBot(discord.Client):
     def __init__(self):
@@ -28,7 +30,7 @@ class DenoBot(discord.Client):
 
     async def on_member_join(self,member):
         channel = self.get_channel(WELCOME_CHANNEL)
-        await channel.send(welcome_message(member.display_name))
+        await channel.send(embed=welcome_message(member))
 
     async def on_message(self,message):
         content = message.content
@@ -80,17 +82,19 @@ class DenoBot(discord.Client):
                         "message": _message
                     }) 
                     self.reminder_setters.remove(message.author)
-                else: await channel.send("invalid call")
+                else: await channel.send(embed=reminder_error())
             elif content[0] == "time":
                 for member in self.reminder_queue:
                     if(member["user"] == message.author): 
                         reminder_message = member["message"]
                         self.reminder_queue.remove(member)
-                reminder_thread(int(content[1]),channel,reminder_message)
+                        reminder_thread(int(content[1]),channel,message.author,reminder_message)
+                        break
+                else: await channel.send(embed=reminder_error())
             #----------------Music Functions------------------
             elif(content[0] == "play"): pass
             #----------------Invalid Command------------------
-            else: await channel.send("Invalid Command")
+            else: await channel.send(embed=invalid_command_embed())
 
     # async def on_member_remove(self,member):
     #     await member.send("oops")
