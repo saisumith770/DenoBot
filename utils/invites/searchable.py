@@ -1,7 +1,7 @@
 from config import *
 import discord
 
-from .embeds.invite_info import create_invite_info_embed
+from utils.embeds.invite_info import create_invite_info_embed
 
 async def get_invites(server,channel):
     for guild in server.guilds:
