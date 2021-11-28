@@ -13,6 +13,7 @@ from utils.embeds.reminder import start_reminder_embed
 from utils.reminder.thread import reminder_thread
 from utils.embeds.reminder_error import reminder_error
 from utils.embeds.invalid_command import invalid_command_embed
+from utils.embeds.helper import create_helper_embed
 
 class DenoBot(discord.Client):
     def __init__(self):
@@ -38,7 +39,7 @@ class DenoBot(discord.Client):
             channel = message.channel
             content = content.lstrip("!deno ").split(' ')
             #----------------Helper Functions------------------
-            if(content[0] == "commands" or content[0] == "help"): await helper_command(channel)
+            if(content[0] == "commands" or content[0] == "help"): await channel.send(embed=create_helper_embed())
             #----------------Invite Functions------------------
             elif(content[0] == "invites"): await get_invites(self,channel)
             elif(content[0] == "invite_info"): await get_invite_info(self,channel,content[1])
