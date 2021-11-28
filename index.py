@@ -9,6 +9,8 @@ from utils.invites import (
     remove_invite
 )
 from utils.helper import helper_command
+from utils.embeds.reminder import start_reminder_embed
+from utils.reminder.thread import reminder_thread
 
 class DenoBot(discord.Client):
     def __init__(self):
@@ -19,6 +21,8 @@ class DenoBot(discord.Client):
         super().__init__(intents=intents)
         self.__version__ = discord.__version__
         self.name = BOT_NAME
+        self.reminder_setters = []
+        self.reminder_queue = []
 
         print("bot is up and running")
 
@@ -62,9 +66,31 @@ class DenoBot(discord.Client):
                 if len(content) > 1: await remove_invite(self,channel,content[1])
                 else: await remove_invite(self,channel)
             #----------------Reminder Functions------------------
-            elif(content[0] == "remind"): pass 
+            elif(content[0] == "remind"): 
+                self.reminder_setters.append(message.author)
+                await channel.send(embed=start_reminder_embed())
+            elif content[0] == "message":
+                if(message.author in self.reminder_setters):
+                    _message = ""
+                    content.remove("message")
+                    for word in content:
+                        _message += word + ' '
+                    self.reminder_queue.append({
+                        "user":message.author,
+                        "message": _message
+                    }) 
+                    self.reminder_setters.remove(message.author)
+                else: await channel.send("invalid call")
+            elif content[0] == "time":
+                for member in self.reminder_queue:
+                    if(member["user"] == message.author): 
+                        reminder_message = member["message"]
+                        self.reminder_queue.remove(member)
+                reminder_thread(int(content[1]),channel,reminder_message)
             #----------------Music Functions------------------
             elif(content[0] == "play"): pass
+            #----------------Invalid Command------------------
+            else: await channel.send("Invalid Command")
 
     # async def on_member_remove(self,member):
     #     await member.send("oops")
